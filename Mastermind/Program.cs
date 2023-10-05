@@ -48,13 +48,13 @@ namespace Mastermind
     /* Class to represent the secret code */
     public class SecretCode {
 
-        private int[] code;
+        private int[] code = {1,2,1,1};
 
         /* Constructor randomly generates a secret code */
         public SecretCode() {
             Random rand = new Random();
-            int[] temp = {rand.Next(1,7), rand.Next(1,7), rand.Next(1,7), rand.Next(1,7)};
-            code = temp;
+            //int[] temp = {rand.Next(1,7), rand.Next(1,7), rand.Next(1,7), rand.Next(1,7)};
+           // code = temp;
         }
 
         /* returns secret code as a string representation (used for testing) */
@@ -65,18 +65,49 @@ namespace Mastermind
         /* Checks input guess against secret code and generates result string */
         public string guessResult(string guess) {
             StringBuilder builder = new StringBuilder();
-            int[] checkedDigits = new int[6]; 
             int[] guessArray = {(int)char.GetNumericValue(guess[0]), (int)char.GetNumericValue(guess[1]), (int)char.GetNumericValue(guess[2]), (int)char.GetNumericValue(guess[3])};
-            
+            //int[] checkedDigits = new int[6]; //fillChecker(new int[6]);
+            int[] tempCode = (int[])code.Clone();
+
+            // Console.WriteLine(checkedDigits[0]);
+            // Console.WriteLine(checkedDigits[1]);
+            // Console.WriteLine(checkedDigits[2]);
+            // Console.WriteLine(checkedDigits[3]);
+            // Console.WriteLine(checkedDigits[4]);
+            // Console.WriteLine(checkedDigits[5]);
             for (int i = 0; i < code.Length; i++) {
-                if (code[i] == guessArray[i]) {
+                if (tempCode[i] == guessArray[i]) {
                     builder.Insert(0, "+");
-                } else if (code.Contains(guessArray[i]) && !(checkedDigits[guessArray[i]-1] == guessArray[i])) {
-                    
-                    checkedDigits[guessArray[i]-1] = guessArray[i];
+                    //checkedDigits[guessArray[i]-1] = 1;  
+                    // eliminating this guess and code digit from being checked again
+                    guessArray[i] = 0;
+                    tempCode[i] = -1; 
+                } 
+            }
+           // Console.WriteLine("{0}{1}{2}{3}", guessArray[0], guessArray[1], guessArray[2], guessArray[3]);
+            // Console.WriteLine(checkedDigits[1]);
+           //  Console.WriteLine(checkedDigits[2]);
+            // Console.WriteLine(checkedDigits[3]);
+            // Console.WriteLine(checkedDigits[4]);
+            // Console.WriteLine(checkedDigits[5]);
+            // Console.WriteLine(checkedDigits[6]);
+            for (int i  = 0; i < code.Length; i++) {  
+                if (tempCode.Contains(guessArray[i])) {
+                    //checkedDigits[guessArray[i]-1] = 1;
+                    int index = Array.IndexOf(tempCode, guessArray[i]);
+                    tempCode[index] = -1;
                     builder.Append("-");
                     
                 }
+
+                /*
+                     if (code.Contains(guessArray[i]) && (checkedDigits[guessArray[i]-1] == 0)) {
+                    checkedDigits[guessArray[i]-1] = 1;
+                    int index = Array.IndexOf(code, guessArray[i]);
+                    builder.Append("-");
+                    
+                }
+                */
             }
             return builder.ToString();
         }
